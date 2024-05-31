@@ -4,12 +4,12 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Bullet_Hell_Game
 {
-    public class Game1 : Game
+    public class BulletHell : Game
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
-        public Game1()
+        public BulletHell()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
