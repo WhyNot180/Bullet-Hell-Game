@@ -67,7 +67,7 @@ namespace Bullet_Hell_Game
 
             Rectangle sourceRectangle = new Rectangle(width * column, height * row, width, height);
 
-            spriteBatch.Draw(Texture, location, sourceRectangle, Color.White, 0, location, Scale, horizontalFlip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
+            spriteBatch.Draw(Texture, location, sourceRectangle, Color.White, 0, new Vector2(0,0), Scale, horizontalFlip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
         }
     }
 }

@@ -3,13 +3,15 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Bullet_Hell_Game
 {
-    public class Character
+    public class Character : ILerpMovable
     {
         private AnimatedSprite sprite;
 
         public Vector2 MoveVelocity {  get; set; }
 
         public Vector2 Position { get; set; }
+        public Vector2 PreviousPosition { get; private set; } = Vector2.Zero;
+        public Vector2 LerpPosition { get; private set; } = Vector2.Zero;
 
         public Character(AnimatedSprite sprite) : this(Vector2.Zero, Vector2.Zero, sprite) { }
 
@@ -25,14 +27,16 @@ namespace Bullet_Hell_Game
             Position = Vector2.Add(Position, Vector2.Multiply(MoveVelocity, deltaSeconds));
         }
 
-        public void Update(GameTime gameTime)
+        public void Update(float deltaSeconds)
         {
-            Move((float) gameTime.ElapsedGameTime.TotalSeconds);
+            PreviousPosition = Position;
+            Move(deltaSeconds);
         }
 
-        public void Draw(SpriteBatch spriteBatch, bool horizontalFlip)
+        public void LerpDraw(SpriteBatch spriteBatch, float ALPHA)
         {
-            sprite.Draw(spriteBatch, Position, horizontalFlip);
+            LerpPosition = Vector2.Lerp(PreviousPosition, Position, ALPHA);
+            sprite.Draw(spriteBatch, LerpPosition, false);
         }
     }
 }
