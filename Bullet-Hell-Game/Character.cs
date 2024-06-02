@@ -10,8 +10,8 @@ namespace Bullet_Hell_Game
         public Vector2 MoveVelocity {  get; set; }
 
         public Vector2 Position { get; set; }
-        public Vector2 PreviousPosition { get; private set; }
-        public Vector2 LerpPosition { get; private set; }
+        public Vector2 PreviousPosition { get; private set; } = Vector2.Zero;
+        public Vector2 LerpPosition { get; private set; } = Vector2.Zero;
 
         public Character(AnimatedSprite sprite) : this(Vector2.Zero, Vector2.Zero, sprite) { }
 
@@ -19,8 +19,6 @@ namespace Bullet_Hell_Game
         {
             MoveVelocity = velocity;
             Position = position;
-            PreviousPosition = position;
-            LerpPosition = position;
             this.sprite = sprite;
         }
 
