@@ -11,7 +11,7 @@ namespace Bullet_Hell_Game
     {
         bool IsCollidable { get; }
         Rectangle BoundingBox { get; }
-        bool IsColliding(Rectangle rect);
+        bool IsColliding(Rectangle collidingRect);
         void OnCollision();
     }
 }
