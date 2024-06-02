@@ -44,7 +44,7 @@ namespace Bullet_Hell_Game
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            player = new Character(new AnimatedSprite(Content.Load<Texture2D>("Sprites/Player"), 1, 1, 3));
+            player = new Character(new AnimatedSprite(Content.Load<Texture2D>("Sprites/Player"), 1, 1, 3), Vector2.Zero, Vector2.Zero, 13);
         }
 
         protected override void Update(GameTime gameTime)
@@ -116,7 +116,6 @@ namespace Bullet_Hell_Game
             {
                 player.MoveVelocity = Vector2.Normalize(player.MoveVelocity);
             }
-            player.MoveVelocity = Vector2.Multiply(player.MoveVelocity, 13);
 
             player.Update(1);
         }
