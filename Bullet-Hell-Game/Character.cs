@@ -25,9 +25,9 @@ namespace Bullet_Hell_Game
             Position = Vector2.Add(Position, Vector2.Multiply(MoveVelocity, deltaSeconds));
         }
 
-        public void Update(GameTime gameTime)
+        public void Update(float deltaSeconds)
         {
-            Move((float) gameTime.ElapsedGameTime.TotalSeconds);
+            Move(deltaSeconds);
         }
 
         public void Draw(SpriteBatch spriteBatch, bool horizontalFlip)
