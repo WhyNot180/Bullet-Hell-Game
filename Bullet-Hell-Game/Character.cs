@@ -20,14 +20,14 @@ namespace Bullet_Hell_Game
             this.sprite = sprite;
         }
 
-        public void Move()
+        public void Move(float deltaSeconds)
         {
-            Position = Vector2.Add(Position, MoveVelocity);
+            Position = Vector2.Add(Position, Vector2.Multiply(MoveVelocity, deltaSeconds));
         }
 
         public void Update(GameTime gameTime)
         {
-            Move();
+            Move((float) gameTime.ElapsedGameTime.TotalSeconds);
         }
 
         public void Draw(SpriteBatch spriteBatch, bool horizontalFlip)
