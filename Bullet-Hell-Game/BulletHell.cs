@@ -19,7 +19,7 @@ namespace Bullet_Hell_Game
         private float timeAccumulator = 0.0f;
         private float maxFrameTime = 250;
 
-        private Character player;
+        private Player player;
 
         // this value stores how far we are in the current frame. For example, when the 
         // value of ALPHA is 0.5, it means we are halfway between the last frame and the 
@@ -44,7 +44,7 @@ namespace Bullet_Hell_Game
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            player = new Character(new AnimatedSprite(Content.Load<Texture2D>("Sprites/Player"), 1, 1, 3), Vector2.Zero, Vector2.Zero, 13);
+            player = new Player(new AnimatedSprite(Content.Load<Texture2D>("Sprites/Player"), 1, 1, 3), Vector2.Zero, 13);
         }
 
         protected override void Update(GameTime gameTime)
