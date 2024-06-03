@@ -2,6 +2,8 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Graphics.PackedVector;
 using Microsoft.Xna.Framework.Input;
+using System;
+using System.Diagnostics;
 
 namespace Bullet_Hell_Game
 {
@@ -16,6 +18,8 @@ namespace Bullet_Hell_Game
         private float previousTime = 0;
         private float timeAccumulator = 0.0f;
         private float maxFrameTime = 250;
+
+        private Character player;
 
         // this value stores how far we are in the current frame. For example, when the 
         // value of ALPHA is 0.5, it means we are halfway between the last frame and the 
@@ -40,7 +44,7 @@ namespace Bullet_Hell_Game
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            player = new Character(new AnimatedSprite(Content.Load<Texture2D>("Sprites/Player"), 1, 1, 3), Vector2.Zero, Vector2.Zero, 13);
         }
 
         protected override void Update(GameTime gameTime)
@@ -82,14 +86,49 @@ namespace Bullet_Hell_Game
 
         private void FixedUpdate()
         {
+            if (Keyboard.GetState().IsKeyDown(Keys.Up))
+            {
+                player.MoveVelocity = new Vector2(player.MoveVelocity.X, -1);
+            }
+            else if (Keyboard.GetState().IsKeyDown(Keys.Down))
+            {
+                player.MoveVelocity = new Vector2(player.MoveVelocity.X, 1);
+            }
+            else
+            {
+                player.MoveVelocity = new Vector2(player.MoveVelocity.X, 0);
+            }
 
+            if (Keyboard.GetState().IsKeyDown(Keys.Right))
+            {
+                player.MoveVelocity = new Vector2(1, player.MoveVelocity.Y);
+            }
+            else if (Keyboard.GetState().IsKeyDown(Keys.Left))
+            {
+                player.MoveVelocity = new Vector2(-1, player.MoveVelocity.Y);
+            }
+            else
+            {
+                player.MoveVelocity = new Vector2(0, player.MoveVelocity.Y);
+            }
+
+            if (!player.MoveVelocity.Equals(Vector2.Zero))
+            {
+                player.MoveVelocity = Vector2.Normalize(player.MoveVelocity);
+            }
+
+            player.Update(1);
         }
 
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
+            _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+
+            player.LerpDraw(_spriteBatch, ALPHA);
+
+            _spriteBatch.End();
 
             base.Draw(gameTime);
         }

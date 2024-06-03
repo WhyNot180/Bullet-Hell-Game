@@ -8,23 +8,24 @@ namespace Bullet_Hell_Game
         private AnimatedSprite sprite;
 
         public Vector2 MoveVelocity {  get; set; }
-
+        public float Speed { get; set; }
         public Vector2 Position { get; set; }
         public Vector2 PreviousPosition { get; private set; } = Vector2.Zero;
         public Vector2 LerpPosition { get; private set; } = Vector2.Zero;
 
-        public Character(AnimatedSprite sprite) : this(Vector2.Zero, Vector2.Zero, sprite) { }
+        public Character(AnimatedSprite sprite) : this(sprite, Vector2.Zero, Vector2.Zero, 1) { }
 
-        public Character(Vector2 position, Vector2 velocity, AnimatedSprite sprite)
+        public Character(AnimatedSprite sprite, Vector2 position, Vector2 velocity, float speed)
         {
             MoveVelocity = velocity;
+            Speed = speed;
             Position = position;
             this.sprite = sprite;
         }
 
         public void Move(float deltaSeconds)
         {
-            Position = Vector2.Add(Position, Vector2.Multiply(MoveVelocity, deltaSeconds));
+            Position = Vector2.Add(Position, Vector2.Multiply(MoveVelocity, deltaSeconds * Speed));
         }
 
         public void Update(float deltaSeconds)
