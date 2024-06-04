@@ -10,7 +10,7 @@ namespace Bullet_Hell_Game
         private const int MaxLevels = 5;
 
         private int level;
-        private List<Rectangle> objects;
+        private List<ICollidable> objects;
         private Rectangle bounds;
         private QuadTree[] nodes;
 
@@ -18,7 +18,7 @@ namespace Bullet_Hell_Game
         {
             this.level = level;
             this.bounds = bounds;
-            objects = new List<Rectangle>();
+            objects = new List<ICollidable>();
             nodes = new QuadTree[4];
         }
 
@@ -82,21 +82,21 @@ namespace Bullet_Hell_Game
             return quadrant;
         }
 
-        public void Insert(Rectangle rect)
+        public void Insert(ICollidable collider)
         {
             if (nodes[0] != null)
             {
-                int index = GetQuadrant(rect);
+                int index = GetQuadrant(collider.BoundingBox);
 
                 if (index != -1)
                 {
-                    nodes[index].Insert(rect);
+                    nodes[index].Insert(collider);
 
                     return;
                 }
             }
 
-            objects.Add(rect);
+            objects.Add(collider);
 
             if (objects.Count > MaxObjects && level > MaxLevels)
             {
@@ -108,7 +108,7 @@ namespace Bullet_Hell_Game
                 int i = 0;
                 while (i < objects.Count)
                 {
-                    int index = GetQuadrant(objects[i]);
+                    int index = GetQuadrant(objects[i].BoundingBox);
                     if (index != -1)
                     {
                         nodes[index].Insert(objects[i]);
@@ -121,7 +121,7 @@ namespace Bullet_Hell_Game
             }
         }
 
-        public List<Rectangle> Retrieve(List<Rectangle> returnObjects, Rectangle rect)
+        public List<ICollidable> Retrieve(List<ICollidable> returnObjects, Rectangle rect)
         {
             int index = GetQuadrant(rect);
             if (index != -1 && nodes[0] != null)
