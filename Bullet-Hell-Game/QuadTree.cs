@@ -48,7 +48,7 @@ namespace Bullet_Hell_Game
             nodes[3] = new QuadTree(level + 1, new Rectangle(x + subWidth, y + subHeight, subWidth, subHeight));
         }
 
-        private int GetQuadrant(Rectangle rect)
+        private int GetQuadrant(RotatableRectangle rect)
         {
             int quadrant = -1;
             double verticalMidpoint = bounds.Y + bounds.Height / 2;
@@ -121,7 +121,7 @@ namespace Bullet_Hell_Game
             }
         }
 
-        public List<ICollidable> Retrieve(List<ICollidable> returnObjects, Rectangle rect)
+        public List<ICollidable> Retrieve(List<ICollidable> returnObjects, RotatableRectangle rect)
         {
             int index = GetQuadrant(rect);
             if (index != -1 && nodes[0] != null)
