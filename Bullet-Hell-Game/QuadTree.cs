@@ -54,9 +54,9 @@ namespace Bullet_Hell_Game
             double verticalMidpoint = bounds.Y + bounds.Height / 2;
             double horizontalMidpoint = bounds.X + bounds.Width / 2;
 
-            bool topQuadrants = (rect.Y <  verticalMidpoint && rect.Y + rect.MaxHeight < verticalMidpoint);
+            bool topQuadrants = (rect.Y <  verticalMidpoint && (rect.Y + rect.MaxHeight) < verticalMidpoint);
             bool bottomQuadrants = (rect.Y > verticalMidpoint);
-            bool leftQuadrants = (rect.X < horizontalMidpoint && rect.X + rect.MaxWidth < horizontalMidpoint);
+            bool leftQuadrants = (rect.X < horizontalMidpoint && (rect.X + rect.MaxWidth) < horizontalMidpoint);
             bool rightQuadrants = (rect.X >  horizontalMidpoint);
 
             if (leftQuadrants)
@@ -98,7 +98,7 @@ namespace Bullet_Hell_Game
 
             objects.Add(collider);
 
-            if (objects.Count > MaxObjects && level > MaxLevels)
+            if (objects.Count > MaxObjects && level < MaxLevels)
             {
                 if (nodes[0] == null)
                 {
