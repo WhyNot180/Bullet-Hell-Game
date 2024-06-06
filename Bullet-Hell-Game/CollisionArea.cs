@@ -42,7 +42,8 @@ namespace Bullet_Hell_Game
                 {
                     if (!returnCollider.Equals(collider))
                     {
-                        if (IsColliding(collider.BoundingBox, returnCollider.BoundingBox))
+                        Vector2 minTranslationVect;
+                        if (IsColliding(collider.BoundingBox, returnCollider.BoundingBox, out minTranslationVect))
                         {
                             returnCollider.OnCollision(collider.CollisionType);
                             collider.OnCollision(returnCollider.CollisionType);
@@ -53,8 +54,13 @@ namespace Bullet_Hell_Game
 
         }
 
-        private bool IsColliding(RotatableShape collisionShapeA, RotatableShape collisionShapeB)
+        private bool IsColliding(RotatableShape collisionShapeA, RotatableShape collisionShapeB, out Vector2 minimumTranslationVector)
         {
+            minimumTranslationVector = Vector2.Zero;
+
+            float overlap = float.PositiveInfinity;
+            Vector2 overlapDirection = Vector2.Zero;
+
             Vector2[] axesA = GetAxes(collisionShapeA);
             Vector2[] axesB = GetAxes(collisionShapeB);
 
@@ -68,6 +74,15 @@ namespace Bullet_Hell_Game
                 if (projectionA.X > projectionB.Y || projectionB.X > projectionA.Y)
                 {
                     return false;
+                } else
+                {
+                    float projectionOverlap = (projectionB.X - projectionA.Y) - (projectionA.X - projectionB.Y);
+
+                    if (projectionOverlap < overlap)
+                    {
+                        overlap = projectionOverlap;
+                        overlapDirection = axis;
+                    }
                 }
             }
 
@@ -81,8 +96,19 @@ namespace Bullet_Hell_Game
                 if (projectionA.X > projectionB.Y || projectionB.X > projectionA.Y)
                 {
                     return false;
+                } else
+                {
+                    float projectionOverlap = (projectionB.X - projectionA.Y) - (projectionA.X - projectionB.Y);
+
+                    if (projectionOverlap < overlap)
+                    {
+                        overlap = projectionOverlap;
+                        overlapDirection = axis;
+                    }
                 }
             }
+
+            minimumTranslationVector = Vector2.Multiply(overlapDirection, overlap);
 
             return true;
             
