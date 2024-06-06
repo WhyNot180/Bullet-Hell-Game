@@ -10,8 +10,8 @@ namespace Bullet_Hell_Game
         public int Y;
         public int MaxWidth;
         public int MaxHeight;
-        private double rotation = 0;
-        public double Rotation {
+        private float rotation = 0;
+        public float Rotation {
             get
             {
                 return rotation;
@@ -21,17 +21,17 @@ namespace Bullet_Hell_Game
                 rotation = value;
                 for (int i = 0; i < OriginalVertices.Count; i++)
                 {
-                    double angle = Math.Acos(Vector2.Dot(OriginalVertices[i].ToVector2(), Vector2.UnitY) / (OriginalVertices[i].ToVector2().Length() * Vector2.UnitY.Length()));
-                    double vectorLength = OriginalVertices[i].ToVector2().Length();
-                    Vertices[i] = new Point((int) Math.Round(vectorLength * Math.Cos(rotation + angle)), (int) Math.Round(vectorLength * Math.Sin(rotation + angle)));
+                    float vectorLength = Math.Sign(OriginalVertices[i].X)*OriginalVertices[i].Length();
+                    float angle = MathF.Acos(Vector2.Dot(OriginalVertices[i], Vector2.UnitY) / (vectorLength * Vector2.UnitY.Length()));
+                    Vertices[i] = new Vector2(vectorLength * MathF.Sin(rotation + angle), vectorLength * MathF.Cos(rotation + angle));
                 }
             }
         }
 
-        public List<Point> OriginalVertices;
-        public List<Point> Vertices;
+        public List<Vector2> OriginalVertices;
+        public List<Vector2> Vertices;
 
-        public RotatableShape(int x, int y, int width, int height, double radians, List<Point> vertices)
+        public RotatableShape(int x, int y, int width, int height, float radians, List<Vector2> vertices)
         {
             X = x;
             Y = y;
@@ -42,23 +42,20 @@ namespace Bullet_Hell_Game
             Rotation = radians;
         }
 
-        public RotatableShape(Rectangle rect, double radians)
+        public RotatableShape(Rectangle rect, float radians)
         {
             X = rect.X;
             Y = rect.Y;
             MaxWidth = rect.Width;
             MaxHeight = rect.Height;
-            OriginalVertices = new List<Point>
+            OriginalVertices = new List<Vector2>
             {
-                new((int)Math.Round(Math.Sqrt((Math.Pow(X - MaxWidth, 2) + Math.Pow(Y - MaxHeight, 2)) / 4) * Math.Cos(Rotation)),
-                    (int)Math.Round(Math.Sqrt((Math.Pow(X - MaxWidth, 2) + Math.Pow(Y - MaxHeight, 2)) / 4) * Math.Sin(Rotation))),
-                new((int)Math.Round(Math.Sqrt((Math.Pow(X + MaxWidth, 2) + Math.Pow(Y - MaxHeight, 2)) / 4) * Math.Cos(Rotation)),
-                    (int)Math.Round(Math.Sqrt((Math.Pow(X + MaxWidth, 2) + Math.Pow(Y - MaxHeight, 2)) / 4) * Math.Sin(Rotation))),
-                new((int)Math.Round(Math.Sqrt((Math.Pow(X + MaxWidth, 2) + Math.Pow(Y + MaxHeight, 2)) / 4) * Math.Cos(Rotation)),
-                    (int)Math.Round(Math.Sqrt((Math.Pow(X + MaxWidth, 2) + Math.Pow(Y + MaxHeight, 2)) / 4) * Math.Sin(Rotation))),
-                new((int)Math.Round(Math.Sqrt((Math.Pow(X - MaxWidth, 2) + Math.Pow(Y + MaxHeight, 2)) / 4) * Math.Cos(Rotation)),
-                    (int)Math.Round(Math.Sqrt((Math.Pow(X - MaxWidth, 2) + Math.Pow(Y + MaxHeight, 2)) / 4) * Math.Sin(Rotation)))
+                new(-MaxWidth / 2, -MaxHeight / 2),
+                new(MaxWidth / 2, -MaxHeight / 2),
+                new(MaxWidth / 2, MaxHeight / 2),
+                new(-MaxWidth / 2, MaxHeight / 2)
             };
+            Vertices = OriginalVertices;
             Rotation = radians;
         }
 
