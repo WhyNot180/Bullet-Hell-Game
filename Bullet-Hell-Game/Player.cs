@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -24,6 +25,38 @@ namespace Bullet_Hell_Game
 
         public override void Update(float deltaSeconds)
         {
+
+            if (Keyboard.GetState().IsKeyDown(Keys.Up))
+            {
+                MoveVelocity = new Vector2(MoveVelocity.X, -1);
+            }
+            else if (Keyboard.GetState().IsKeyDown(Keys.Down))
+            {
+                MoveVelocity = new Vector2(MoveVelocity.X, 1);
+            }
+            else
+            {
+                MoveVelocity = new Vector2(MoveVelocity.X, 0);
+            }
+
+            if (Keyboard.GetState().IsKeyDown(Keys.Right))
+            {
+                MoveVelocity = new Vector2(1, MoveVelocity.Y);
+            }
+            else if (Keyboard.GetState().IsKeyDown(Keys.Left))
+            {
+                MoveVelocity = new Vector2(-1, MoveVelocity.Y);
+            }
+            else
+            {
+                MoveVelocity = new Vector2(0, MoveVelocity.Y);
+            }
+
+            if (!MoveVelocity.Equals(Vector2.Zero))
+            {
+                MoveVelocity = Vector2.Normalize(MoveVelocity);
+            }
+
             base.Update(deltaSeconds);
             BoundingBox.X = (int) Math.Round(Position.X);
             BoundingBox.Y = (int) Math.Round(Position.Y);

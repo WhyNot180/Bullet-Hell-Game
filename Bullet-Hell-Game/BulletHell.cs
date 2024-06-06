@@ -97,37 +97,6 @@ namespace Bullet_Hell_Game
 
         private void FixedUpdate()
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.Up))
-            {
-                player.MoveVelocity = new Vector2(player.MoveVelocity.X, -1);
-            }
-            else if (Keyboard.GetState().IsKeyDown(Keys.Down))
-            {
-                player.MoveVelocity = new Vector2(player.MoveVelocity.X, 1);
-            }
-            else
-            {
-                player.MoveVelocity = new Vector2(player.MoveVelocity.X, 0);
-            }
-
-            if (Keyboard.GetState().IsKeyDown(Keys.Right))
-            {
-                player.MoveVelocity = new Vector2(1, player.MoveVelocity.Y);
-            }
-            else if (Keyboard.GetState().IsKeyDown(Keys.Left))
-            {
-                player.MoveVelocity = new Vector2(-1, player.MoveVelocity.Y);
-            }
-            else
-            {
-                player.MoveVelocity = new Vector2(0, player.MoveVelocity.Y);
-            }
-
-            if (!player.MoveVelocity.Equals(Vector2.Zero))
-            {
-                player.MoveVelocity = Vector2.Normalize(player.MoveVelocity);
-            }
-
             player.Update(1);
             collisionArea.Update();
         }
