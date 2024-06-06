@@ -28,7 +28,7 @@ namespace Bullet_Hell_Game
             Position = Vector2.Add(Position, Vector2.Multiply(MoveVelocity, deltaSeconds * Speed));
         }
 
-        public void Update(float deltaSeconds)
+        public virtual void Update(float deltaSeconds)
         {
             PreviousPosition = Position;
             Move(deltaSeconds);

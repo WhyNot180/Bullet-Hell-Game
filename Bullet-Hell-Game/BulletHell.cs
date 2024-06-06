@@ -18,13 +18,15 @@ namespace Bullet_Hell_Game
         private float previousTime = 0;
         private float timeAccumulator = 0.0f;
         private float maxFrameTime = 250;
-
-        private Character player;
-
+        
         // this value stores how far we are in the current frame. For example, when the 
         // value of ALPHA is 0.5, it means we are halfway between the last frame and the 
         // next upcoming frame.
         private float ALPHA = 0;
+
+        private Player player;
+
+        private CollisionArea collisionArea;
 
         public BulletHell()
         {
@@ -37,6 +39,13 @@ namespace Bullet_Hell_Game
         {
             // TODO: Add your initialization logic here
 
+            _graphics.IsFullScreen = false;
+            _graphics.PreferredBackBufferWidth = 640;
+            _graphics.PreferredBackBufferHeight = 480;
+            _graphics.ApplyChanges();
+
+            collisionArea = new CollisionArea(new Rectangle(0, 0, 640, 480));
+
             base.Initialize();
         }
 
@@ -44,7 +53,9 @@ namespace Bullet_Hell_Game
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            player = new Character(new AnimatedSprite(Content.Load<Texture2D>("Sprites/Player"), 1, 1, 3), Vector2.Zero, Vector2.Zero, 13);
+            player = new Player(new AnimatedSprite(Content.Load<Texture2D>("Sprites/Player"), 1, 1, 3), new Vector2(110,110), 13);
+            
+            collisionArea.colliders.Add(player);
         }
 
         protected override void Update(GameTime gameTime)
@@ -86,38 +97,8 @@ namespace Bullet_Hell_Game
 
         private void FixedUpdate()
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.Up))
-            {
-                player.MoveVelocity = new Vector2(player.MoveVelocity.X, -1);
-            }
-            else if (Keyboard.GetState().IsKeyDown(Keys.Down))
-            {
-                player.MoveVelocity = new Vector2(player.MoveVelocity.X, 1);
-            }
-            else
-            {
-                player.MoveVelocity = new Vector2(player.MoveVelocity.X, 0);
-            }
-
-            if (Keyboard.GetState().IsKeyDown(Keys.Right))
-            {
-                player.MoveVelocity = new Vector2(1, player.MoveVelocity.Y);
-            }
-            else if (Keyboard.GetState().IsKeyDown(Keys.Left))
-            {
-                player.MoveVelocity = new Vector2(-1, player.MoveVelocity.Y);
-            }
-            else
-            {
-                player.MoveVelocity = new Vector2(0, player.MoveVelocity.Y);
-            }
-
-            if (!player.MoveVelocity.Equals(Vector2.Zero))
-            {
-                player.MoveVelocity = Vector2.Normalize(player.MoveVelocity);
-            }
-
             player.Update(1);
+            collisionArea.Update();
         }
 
         protected override void Draw(GameTime gameTime)

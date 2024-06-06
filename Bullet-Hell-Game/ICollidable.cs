@@ -10,8 +10,8 @@ namespace Bullet_Hell_Game
     public interface ICollidable
     {
         bool IsCollidable { get; }
-        Rectangle BoundingBox { get; }
-        bool IsColliding(Rectangle collidingRect);
-        void OnCollision();
+        CollisionArea.CollisionType CollisionType { get; }
+        RotatableShape BoundingBox { get; }
+        void OnCollision(CollisionArea.CollisionType collisionType, Vector2 minimumTranslationVector);
     }
 }
