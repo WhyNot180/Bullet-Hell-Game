@@ -45,8 +45,8 @@ namespace Bullet_Hell_Game
                         Vector2 minTranslationVect;
                         if (IsColliding(collider.BoundingBox, returnCollider.BoundingBox, out minTranslationVect))
                         {
-                            returnCollider.OnCollision(collider.CollisionType);
-                            collider.OnCollision(returnCollider.CollisionType);
+                            returnCollider.OnCollision(collider.CollisionType, -minTranslationVect);
+                            collider.OnCollision(returnCollider.CollisionType, minTranslationVect);
                         }
                     }
                 }

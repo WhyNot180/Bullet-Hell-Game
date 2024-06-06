@@ -29,9 +29,10 @@ namespace Bullet_Hell_Game
             BoundingBox.Y = (int) Math.Round(Position.Y);
         }
 
-        public void OnCollision(CollisionArea.CollisionType collisionType)
+        public void OnCollision(CollisionArea.CollisionType collisionType, Vector2 minimumTranslationVector)
         {
             Debug.WriteLine("Player Collision: " + collisionType.ToString());
+            Position = Vector2.Add(Position, minimumTranslationVector);
         }
 
     }

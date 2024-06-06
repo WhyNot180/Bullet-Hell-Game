@@ -12,6 +12,6 @@ namespace Bullet_Hell_Game
         bool IsCollidable { get; }
         CollisionArea.CollisionType CollisionType { get; }
         RotatableShape BoundingBox { get; }
-        void OnCollision(CollisionArea.CollisionType collisionType);
+        void OnCollision(CollisionArea.CollisionType collisionType, Vector2 minimumTranslationVector);
     }
 }
