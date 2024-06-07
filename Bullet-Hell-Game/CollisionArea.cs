@@ -36,17 +36,19 @@ namespace Bullet_Hell_Game
             List<ICollidable> returnColliders = new List<ICollidable>();
             foreach (var collider in colliders)
             {
-                returnColliders.Clear();
-                quadTree.Retrieve(returnColliders, collider.BoundingBox);
-                foreach (var returnCollider in returnColliders)
+                if (collider.IsCollidable)
                 {
-                    if (!returnCollider.Equals(collider))
+                    returnColliders.Clear();
+                    quadTree.Retrieve(returnColliders, collider.BoundingBox);
+                    foreach (var returnCollider in returnColliders)
                     {
-                        Vector2 minTranslationVect;
-                        if (IsColliding(collider.BoundingBox, returnCollider.BoundingBox, out minTranslationVect))
+                        if (!returnCollider.Equals(collider) && returnCollider.IsCollidable)
                         {
-                            returnCollider.OnCollision(collider.CollisionType, -minTranslationVect);
-                            collider.OnCollision(returnCollider.CollisionType, minTranslationVect);
+                            if (IsColliding(collider.BoundingBox, returnCollider.BoundingBox, out Vector2 minTranslationVect))
+                            {
+                                returnCollider.OnCollision(collider.CollisionType, -minTranslationVect);
+                                collider.OnCollision(returnCollider.CollisionType, minTranslationVect);
+                            }
                         }
                     }
                 }
