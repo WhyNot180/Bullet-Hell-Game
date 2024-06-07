@@ -41,10 +41,10 @@ namespace Bullet_Hell_Game
 
             _graphics.IsFullScreen = false;
             _graphics.PreferredBackBufferWidth = 640;
-            _graphics.PreferredBackBufferHeight = 480;
+            _graphics.PreferredBackBufferHeight = 780;
             _graphics.ApplyChanges();
 
-            collisionArea = new CollisionArea(new Rectangle(0, 0, 640, 480));
+            collisionArea = new CollisionArea(new Rectangle(0, 0, 640, 780));
 
             base.Initialize();
         }
@@ -103,7 +103,7 @@ namespace Bullet_Hell_Game
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
 
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
