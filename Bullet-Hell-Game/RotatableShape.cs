@@ -12,12 +12,16 @@ namespace Bullet_Hell_Game
         public float MaxWidth;
         public float MaxHeight;
         public float Rotation = 0;
+        public float Radius;
+        public bool IsCircle { get; private set; }
 
         public List<Vector2> RelativeVertices;
         public List<Vector2> AbsoluteVertices;
 
         public RotatableShape(float x, float y, float width, float height, float radians, List<Vector2> vertices)
         {
+            IsCircle = false;
+            Radius = float.NaN;
             X = x;
             Y = y;
             MaxWidth = width; 
@@ -30,6 +34,8 @@ namespace Bullet_Hell_Game
 
         public RotatableShape(Rectangle rect, float radians)
         {
+            IsCircle = false;
+            Radius = float.NaN;
             X = rect.X;
             Y = rect.Y;
             MaxWidth = rect.Width;
@@ -46,12 +52,25 @@ namespace Bullet_Hell_Game
             RelativeVertices.ForEach(vert => AbsoluteVertices.Add(new Vector2(X + (vert.X * MathF.Cos(Rotation) + vert.Y * MathF.Sin(Rotation)), Y + (vert.X * MathF.Sin(Rotation) - vert.Y * MathF.Cos(Rotation)))));
         }
 
+        public RotatableShape(float x, float y, float radius)
+        {
+            IsCircle = true;
+            Radius = radius;
+            MaxWidth = radius / 2;
+            MaxHeight = radius / 2;
+            X = x;
+            Y = y;
+        }
+
         public void Move(Vector2 newPosition)
         {
             X = newPosition.X;
             Y = newPosition.Y;
-            AbsoluteVertices.Clear();
-            RelativeVertices.ForEach(vert => AbsoluteVertices.Add(new Vector2(X + (vert.X * MathF.Cos(Rotation) + vert.Y * MathF.Sin(Rotation)), Y + (vert.X * MathF.Sin(Rotation) - vert.Y * MathF.Cos(Rotation)))));
+            if (!IsCircle)
+            {
+                AbsoluteVertices.Clear();
+                RelativeVertices.ForEach(vert => AbsoluteVertices.Add(new Vector2(X + (vert.X * MathF.Cos(Rotation) + vert.Y * MathF.Sin(Rotation)), Y + (vert.X * MathF.Sin(Rotation) - vert.Y * MathF.Cos(Rotation)))));
+            }
         }
     }
 }
