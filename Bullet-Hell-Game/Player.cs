@@ -24,13 +24,7 @@ namespace Bullet_Hell_Game
         {
             float width = sprite.Texture.Width * sprite.Scale;
             float height = sprite.Texture.Height * sprite.Scale;
-            BoundingBox = new RotatableShape(position.X + (width/2), position.Y + (height/2), width, height, 0, new List<Vector2>
-            {
-                new(-width / 2, height / 2),
-                new(width / 2, height / 2),
-                new(width / 2, -height / 2),
-                new(-width / 2, -height / 2)
-            });
+            BoundingBox = new RotatableShape(position.X + (width/2), position.Y + (height/2), width/2);
         }
 
         public override void Update(float deltaSeconds)
@@ -68,7 +62,6 @@ namespace Bullet_Hell_Game
             }
             base.Update(deltaSeconds);
             BoundingBox.Move(new Vector2(BoundingBox.X, BoundingBox.Y) + MoveVelocity*Speed);
-
         }
 
         public void OnCollision(CollisionArea.CollisionType collisionType, Vector2 minimumTranslationVector)
