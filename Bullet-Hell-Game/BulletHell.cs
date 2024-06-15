@@ -1,9 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Graphics.PackedVector;
 using Microsoft.Xna.Framework.Input;
-using System;
-using System.Diagnostics;
+using System.Collections.Generic;
 
 namespace Bullet_Hell_Game
 {
@@ -27,6 +25,8 @@ namespace Bullet_Hell_Game
         private Player player;
 
         private CollisionArea collisionArea;
+        private Stage stage;
+        private List<StageElement> stageElements;
 
         public BulletHell()
         {
@@ -41,10 +41,10 @@ namespace Bullet_Hell_Game
 
             _graphics.IsFullScreen = false;
             _graphics.PreferredBackBufferWidth = 640;
-            _graphics.PreferredBackBufferHeight = 480;
+            _graphics.PreferredBackBufferHeight = 780;
             _graphics.ApplyChanges();
 
-            collisionArea = new CollisionArea(new Rectangle(0, 0, 640, 480));
+            collisionArea = new CollisionArea(new Rectangle(0, 0, 640, 780));
 
             base.Initialize();
         }
@@ -54,8 +54,11 @@ namespace Bullet_Hell_Game
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             player = new Player(new AnimatedSprite(Content.Load<Texture2D>("Sprites/Player"), 1, 1, 3), new Vector2(110,110), 13);
-            
+            stageElements = new List<StageElement>() { new(Content.Load<Texture2D>("Sprites/Brass Pipe"), true, new RotatableShape(new Rectangle(605, 200, 80, 40), 0), new Vector2(545, 185), CollisionArea.CollisionType.Obstacle) };
+            stage = new Stage(stageElements);
+
             collisionArea.colliders.Add(player);
+            collisionArea.colliders.AddRange(stageElements);
         }
 
         protected override void Update(GameTime gameTime)
@@ -98,16 +101,18 @@ namespace Bullet_Hell_Game
         private void FixedUpdate()
         {
             player.Update(1);
+            stage.Update(1);
             collisionArea.Update();
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
 
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
             player.LerpDraw(_spriteBatch, ALPHA);
+            stage.LerpDraw(_spriteBatch, ALPHA);
 
             _spriteBatch.End();
 
