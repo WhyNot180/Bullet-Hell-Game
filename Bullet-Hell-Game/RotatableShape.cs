@@ -1,45 +1,31 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Bullet_Hell_Game
 {
     public class RotatableShape
     {
-        public int X;
-        public int Y;
-        public int MaxWidth;
-        public int MaxHeight;
-        private float rotation = 0;
-        public float Rotation {
-            get
-            {
-                return rotation;
-            }
-            set
-            {
-                rotation = value;
-                for (int i = 0; i < OriginalVertices.Count; i++)
-                {
-                    float vectorLength = Math.Sign(OriginalVertices[i].X)*OriginalVertices[i].Length();
-                    float angle = MathF.Acos(Vector2.Dot(OriginalVertices[i], Vector2.UnitY) / (vectorLength * Vector2.UnitY.Length()));
-                    Vertices[i] = new Vector2(vectorLength * MathF.Sin(rotation + angle), vectorLength * MathF.Cos(rotation + angle));
-                }
-            }
-        }
+        public float X;
+        public float Y;
+        public float MaxWidth;
+        public float MaxHeight;
+        public float Rotation = 0;
 
-        public List<Vector2> OriginalVertices;
-        public List<Vector2> Vertices;
+        public List<Vector2> RelativeVertices;
+        public List<Vector2> AbsoluteVertices;
 
-        public RotatableShape(int x, int y, int width, int height, float radians, List<Vector2> vertices)
+        public RotatableShape(float x, float y, float width, float height, float radians, List<Vector2> vertices)
         {
             X = x;
             Y = y;
             MaxWidth = width; 
             MaxHeight = height;
-            OriginalVertices = vertices;
-            Vertices = vertices;
+            RelativeVertices = vertices;
+            AbsoluteVertices = new List<Vector2>();
             Rotation = radians;
+            RelativeVertices.ForEach(vert => AbsoluteVertices.Add(new Vector2(X + (vert.X * MathF.Cos(Rotation) + vert.Y * MathF.Sin(Rotation)), Y + (vert.X * MathF.Sin(Rotation) - vert.Y * MathF.Cos(Rotation)))));
         }
 
         public RotatableShape(Rectangle rect, float radians)
@@ -48,16 +34,24 @@ namespace Bullet_Hell_Game
             Y = rect.Y;
             MaxWidth = rect.Width;
             MaxHeight = rect.Height;
-            OriginalVertices = new List<Vector2>
-            {
-                new(-MaxWidth / 2, -MaxHeight / 2),
-                new(MaxWidth / 2, -MaxHeight / 2),
-                new(MaxWidth / 2, MaxHeight / 2),
-                new(-MaxWidth / 2, MaxHeight / 2)
-            };
-            Vertices = OriginalVertices;
             Rotation = radians;
+            RelativeVertices = new List<Vector2>
+            {
+                new(-MaxWidth / 2, MaxHeight / 2),
+                new(MaxWidth / 2, MaxHeight / 2),
+                new(MaxWidth / 2, -MaxHeight / 2),
+                new(-MaxWidth / 2, -MaxHeight / 2)
+            };
+            AbsoluteVertices = new List<Vector2>();
+            RelativeVertices.ForEach(vert => AbsoluteVertices.Add(new Vector2(X + (vert.X * MathF.Cos(Rotation) + vert.Y * MathF.Sin(Rotation)), Y + (vert.X * MathF.Sin(Rotation) - vert.Y * MathF.Cos(Rotation)))));
         }
 
+        public void Move(Vector2 newPosition)
+        {
+            X = newPosition.X;
+            Y = newPosition.Y;
+            AbsoluteVertices.Clear();
+            RelativeVertices.ForEach(vert => AbsoluteVertices.Add(new Vector2(X + (vert.X * MathF.Cos(Rotation) + vert.Y * MathF.Sin(Rotation)), Y + (vert.X * MathF.Sin(Rotation) - vert.Y * MathF.Cos(Rotation)))));
+        }
     }
 }
