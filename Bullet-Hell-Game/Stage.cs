@@ -1,6 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Bullet_Hell_Game
 {
@@ -12,9 +15,11 @@ namespace Bullet_Hell_Game
         public Vector2 MoveVelocity { get; set; } = Vector2.Zero;
         public float Speed { get; set; }
 
-        private List<StageElement> elements;
+        public event EventHandler? Kill;
 
-        public Stage(List<StageElement> elements)
+        public ObservableCollection<StageElement> elements;
+
+        public Stage(ObservableCollection<StageElement> elements)
         {
             this.elements = elements;
         }
@@ -31,7 +36,12 @@ namespace Bullet_Hell_Game
 
         public void LerpDraw(SpriteBatch spriteBatch, float ALPHA)
         {
-            elements.ForEach(element => element.LerpDraw(spriteBatch, ALPHA));
+            return;
+        }
+        
+        public void OnKill(EventArgs e)
+        {
+            Kill?.Invoke(this, e);
         }
 
     }
