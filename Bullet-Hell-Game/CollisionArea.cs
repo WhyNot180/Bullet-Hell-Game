@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Bullet_Hell_Game
 {
-    public class CollisionArea
+    public class CollisionArea : IFixedUpdatable
     {
         public enum CollisionType
         {
@@ -21,12 +21,14 @@ namespace Bullet_Hell_Game
 
         private QuadTree quadTree;
 
+        public event EventHandler? Kill;
+
         public CollisionArea(Rectangle bounds)
         {
             quadTree = new QuadTree(0, bounds);
         }
 
-        public void Update()
+        public void FixedUpdate()
         {
             quadTree.Clear();
             colliders.AsEnumerable().ToList().ForEach(collider => quadTree.Insert(collider));
@@ -215,6 +217,11 @@ namespace Bullet_Hell_Game
                 axes[i].Normalize();
             }
             return axes;
+        }
+
+        public void OnKill(EventArgs e)
+        {
+            Kill.Invoke(this, e);
         }
     }
 }
