@@ -5,7 +5,7 @@ using System.Diagnostics;
 
 namespace Bullet_Hell_Game
 {
-    public class StageElement : ILerpMovable, ICollidable
+    public class StageElement : ILerpMovable, ICollidable, IFixedUpdatable
     {
         public Vector2 Position { get; set; }
         public Vector2 PreviousPosition { get; private set; } = Vector2.Zero;
@@ -39,7 +39,7 @@ namespace Bullet_Hell_Game
             }
         }
 
-        public virtual void Update()
+        public virtual void FixedUpdate()
         {
             PreviousPosition = Position;
             Position += MoveVelocity;
