@@ -8,6 +8,8 @@ namespace Bullet_Hell_Game
 {
     public class EntityManager<T> where T : IKillable
     {
+        private List<T> killList = new List<T>();
+
         readonly Func<ObservableCollection<T>> entityListGetter;
 
         private ObservableCollection<T> EntityList
@@ -37,8 +39,13 @@ namespace Bullet_Hell_Game
 
         void Kill(object? sender, EventArgs e)
         {
-            EntityList.Remove((T)sender);
-            Debug.WriteLine("Hellos");
+            killList.Add((T)sender);
+        }
+
+        public void KillFlaggedObjects()
+        {
+            killList.ForEach(x => EntityList.Remove(x));
+            killList.Clear();
         }
     }
 }

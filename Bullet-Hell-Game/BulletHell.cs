@@ -116,6 +116,9 @@ namespace Bullet_Hell_Game
             ALPHA = (timeAccumulator / fixedUpdateDelta);
 
             // Put updates that don't depend on a fixed framerate below
+            collisionEntityManager.KillFlaggedObjects();
+            fixedUpdateablesManager.KillFlaggedObjects();
+            lerpEntityManager.KillFlaggedObjects();
 
             base.Update(gameTime);
         }
