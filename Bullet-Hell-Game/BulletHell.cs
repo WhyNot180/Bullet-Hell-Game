@@ -12,8 +12,8 @@ namespace Bullet_Hell_Game
         private SpriteBatch _spriteBatch;
 
         private EntityManager<ILerpMovable> lerpEntityManager;
-        private EntityManager<ILerpMovable> stageElementManager;
         private EntityManager<ICollidable> collisionEntityManager;
+        private EntityManager<IFixedUpdatable> fixedUpdateablesManager;
 
         // Fix updates to 30 fps
         private float fixedUpdateDelta = (int)(1000 / (float)30);
@@ -28,6 +28,7 @@ namespace Bullet_Hell_Game
         private float ALPHA = 0;
 
         public ObservableCollection<ILerpMovable> lerpMovables = new ObservableCollection<ILerpMovable>();
+        public ObservableCollection<IFixedUpdatable> fixedUpdateables = new ObservableCollection<IFixedUpdatable>();
 
         private Player player;
 
@@ -74,6 +75,12 @@ namespace Bullet_Hell_Game
 
             collisionEntityManager = new EntityManager<ICollidable>(() => { return collisionArea.colliders;  });
 
+            fixedUpdateables.Add(player);
+            fixedUpdateables.Add(stage);
+            stageElements.AsEnumerable().ToList().ForEach(x => fixedUpdateables.Add(x));
+            fixedUpdateables.Add(collisionArea);
+
+            fixedUpdateablesManager = new EntityManager<IFixedUpdatable>(() => { return fixedUpdateables; });
         }
 
         protected override void Update(GameTime gameTime)
@@ -115,9 +122,10 @@ namespace Bullet_Hell_Game
 
         private void FixedUpdate()
         {
-            player.Update(1);
-            stage.Update(1);
-            collisionArea.Update();
+            foreach (var item in fixedUpdateables)
+            {
+                item.FixedUpdate();
+            }
         }
 
         protected override void Draw(GameTime gameTime)
