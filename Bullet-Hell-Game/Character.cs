@@ -4,7 +4,7 @@ using System;
 
 namespace Bullet_Hell_Game
 {
-    public class Character : ILerpMovable
+    public class Character : ILerpMovable, IFixedUpdatable
     {
         private AnimatedSprite sprite;
 
@@ -26,15 +26,15 @@ namespace Bullet_Hell_Game
             this.sprite = sprite;
         }
 
-        public void Move(float deltaSeconds)
+        public void Move()
         {
-            Position = Vector2.Add(Position, Vector2.Multiply(MoveDirection, deltaSeconds * Speed));
+            Position = Vector2.Add(Position, Vector2.Multiply(MoveDirection, Speed));
         }
 
-        public virtual void Update(float deltaSeconds)
+        public virtual void FixedUpdate()
         {
             PreviousPosition = Position;
-            Move(deltaSeconds);
+            Move();
         }
 
         public void LerpDraw(SpriteBatch spriteBatch, float ALPHA)
