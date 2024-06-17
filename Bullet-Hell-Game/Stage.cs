@@ -31,7 +31,7 @@ namespace Bullet_Hell_Game
 
         public void Update(float deltaTime)
         {
-            elements.ForEach(element => element.Move(MoveVelocity*Speed));
+            elements.AsEnumerable().ToList().ForEach(element => element.MoveVelocity = MoveDirection * Speed);
         }
 
         public void LerpDraw(SpriteBatch spriteBatch, float ALPHA)

@@ -39,7 +39,7 @@ namespace Bullet_Hell_Game
             }
         }
 
-        public void Move(Vector2 moveVelocity)
+        public virtual void Update()
         {
             PreviousPosition = Position;
             Position += MoveVelocity;
