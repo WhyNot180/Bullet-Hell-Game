@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Bullet_Hell_Game
 {
-    public class Stage : ILerpMovable
+    public class Stage : ILerpMovable, IFixedUpdatable
     {
         public Vector2 Position {  get; set; }
         public Vector2 PreviousPosition { get; private set; } = Vector2.Zero;
@@ -24,12 +24,12 @@ namespace Bullet_Hell_Game
             this.elements = elements;
         }
 
-        public void Move(float deltaSeconds)
+        public void Move()
         {
-            Position = Vector2.Add(Position, Vector2.Multiply(MoveDirection, deltaSeconds * Speed));
+            Position = Vector2.Add(Position, Vector2.Multiply(MoveDirection, Speed));
         }
 
-        public void Update(float deltaTime)
+        public void FixedUpdate()
         {
             elements.AsEnumerable().ToList().ForEach(element => element.MoveVelocity = MoveDirection * Speed);
         }
