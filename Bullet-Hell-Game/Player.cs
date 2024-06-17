@@ -27,7 +27,7 @@ namespace Bullet_Hell_Game
             BoundingBox = new RotatableShape(position.X + (width/2), position.Y + (height/2), width/2);
         }
 
-        public override void Update(float deltaSeconds)
+        public override void FixedUpdate()
         {
 
             if (Keyboard.GetState().IsKeyDown(Keys.Up))
@@ -60,7 +60,7 @@ namespace Bullet_Hell_Game
             {
                 MoveDirection = Vector2.Normalize(MoveDirection);
             }
-            base.Update(deltaSeconds);
+            base.FixedUpdate();
             BoundingBox.Move(new Vector2(BoundingBox.X, BoundingBox.Y) + MoveDirection*Speed);
         }
 
