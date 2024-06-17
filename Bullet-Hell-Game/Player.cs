@@ -32,43 +32,43 @@ namespace Bullet_Hell_Game
 
             if (Keyboard.GetState().IsKeyDown(Keys.Up))
             {
-                MoveVelocity = new Vector2(MoveVelocity.X, -1);
+                MoveDirection = new Vector2(MoveDirection.X, -1);
             }
             else if (Keyboard.GetState().IsKeyDown(Keys.Down))
             {
-                MoveVelocity = new Vector2(MoveVelocity.X, 1);
+                MoveDirection = new Vector2(MoveDirection.X, 1);
             }
             else
             {
-                MoveVelocity = new Vector2(MoveVelocity.X, 0);
+                MoveDirection = new Vector2(MoveDirection.X, 0);
             }
 
             if (Keyboard.GetState().IsKeyDown(Keys.Right))
             {
-                MoveVelocity = new Vector2(1, MoveVelocity.Y);
+                MoveDirection = new Vector2(1, MoveDirection.Y);
             }
             else if (Keyboard.GetState().IsKeyDown(Keys.Left))
             {
-                MoveVelocity = new Vector2(-1, MoveVelocity.Y);
+                MoveDirection = new Vector2(-1, MoveDirection.Y);
             }
             else
             {
-                MoveVelocity = new Vector2(0, MoveVelocity.Y);
+                MoveDirection = new Vector2(0, MoveDirection.Y);
             }
 
-            if (!MoveVelocity.Equals(Vector2.Zero))
+            if (!MoveDirection.Equals(Vector2.Zero))
             {
-                MoveVelocity = Vector2.Normalize(MoveVelocity);
+                MoveDirection = Vector2.Normalize(MoveDirection);
             }
             base.Update(deltaSeconds);
-            BoundingBox.Move(new Vector2(BoundingBox.X, BoundingBox.Y) + MoveVelocity*Speed);
+            BoundingBox.Move(new Vector2(BoundingBox.X, BoundingBox.Y) + MoveDirection*Speed);
         }
 
         public void OnCollision(CollisionArea.CollisionType collisionType, Vector2 minimumTranslationVector)
         {
             Position = Vector2.Add(Position, minimumTranslationVector/2);
             BoundingBox.Move(new Vector2(BoundingBox.X, BoundingBox.Y) + minimumTranslationVector / 2);
-            MoveVelocity = Vector2.Zero;
+            MoveDirection = Vector2.Zero;
         }
 
     }

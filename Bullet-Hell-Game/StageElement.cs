@@ -10,7 +10,7 @@ namespace Bullet_Hell_Game
         public Vector2 Position { get; set; }
         public Vector2 PreviousPosition { get; private set; } = Vector2.Zero;
         public Vector2 LerpPosition { get; private set; } = Vector2.Zero;
-        
+        public Vector2 MoveVelocity { get; set; } = Vector2.Zero;
         public bool IsCollidable { get; set; }
         public RotatableShape BoundingBox { get; set; }
         public CollisionArea.CollisionType CollisionType { get; set; }
@@ -42,8 +42,8 @@ namespace Bullet_Hell_Game
         public void Move(Vector2 moveVelocity)
         {
             PreviousPosition = Position;
-            Position += moveVelocity;
-            BoundingBox.Move(new Vector2(BoundingBox.X, BoundingBox.Y) + moveVelocity);
+            Position += MoveVelocity;
+            BoundingBox.Move(new Vector2(BoundingBox.X, BoundingBox.Y) + MoveVelocity);
         }
 
         public void LerpDraw(SpriteBatch spriteBatch, float ALPHA)

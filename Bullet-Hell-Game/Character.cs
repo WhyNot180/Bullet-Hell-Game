@@ -8,7 +8,7 @@ namespace Bullet_Hell_Game
     {
         private AnimatedSprite sprite;
 
-        public Vector2 MoveVelocity {  get; set; }
+        public Vector2 MoveDirection {  get; set; }
         public float Speed { get; set; }
         public Vector2 Position { get; set; }
         public Vector2 PreviousPosition { get; private set; } = Vector2.Zero;
@@ -20,7 +20,7 @@ namespace Bullet_Hell_Game
 
         public Character(AnimatedSprite sprite, Vector2 position, Vector2 velocity, float speed)
         {
-            MoveVelocity = velocity;
+            MoveDirection = velocity;
             Speed = speed;
             Position = position;
             this.sprite = sprite;
@@ -28,7 +28,7 @@ namespace Bullet_Hell_Game
 
         public void Move(float deltaSeconds)
         {
-            Position = Vector2.Add(Position, Vector2.Multiply(MoveVelocity, deltaSeconds * Speed));
+            Position = Vector2.Add(Position, Vector2.Multiply(MoveDirection, deltaSeconds * Speed));
         }
 
         public virtual void Update(float deltaSeconds)

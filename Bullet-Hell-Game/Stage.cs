@@ -12,7 +12,7 @@ namespace Bullet_Hell_Game
         public Vector2 Position {  get; set; }
         public Vector2 PreviousPosition { get; private set; } = Vector2.Zero;
         public Vector2 LerpPosition { get; private set; } = Vector2.Zero;
-        public Vector2 MoveVelocity { get; set; } = Vector2.Zero;
+        public Vector2 MoveDirection { get; set; } = Vector2.Zero;
         public float Speed { get; set; }
 
         public event EventHandler? Kill;
@@ -26,7 +26,7 @@ namespace Bullet_Hell_Game
 
         public void Move(float deltaSeconds)
         {
-            Position = Vector2.Add(Position, Vector2.Multiply(MoveVelocity, deltaSeconds * Speed));
+            Position = Vector2.Add(Position, Vector2.Multiply(MoveDirection, deltaSeconds * Speed));
         }
 
         public void Update(float deltaTime)
