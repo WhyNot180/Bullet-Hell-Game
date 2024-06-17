@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace Bullet_Hell_Game
@@ -16,7 +17,7 @@ namespace Bullet_Hell_Game
             Player
         }
 
-        public List<ICollidable> colliders = new List<ICollidable>();
+        public ObservableCollection<ICollidable> colliders = new ObservableCollection<ICollidable>();
 
         private QuadTree quadTree;
 
@@ -28,10 +29,10 @@ namespace Bullet_Hell_Game
         public void Update()
         {
             quadTree.Clear();
-            colliders.ForEach(collider => quadTree.Insert(collider));
+            colliders.AsEnumerable().ToList().ForEach(collider => quadTree.Insert(collider));
 
             List<ICollidable> returnColliders = new List<ICollidable>();
-            foreach (var collider in colliders)
+            foreach (var collider in colliders.AsEnumerable().ToList())
             {
                 if (collider.IsCollidable)
                 {
@@ -51,7 +52,7 @@ namespace Bullet_Hell_Game
                     }
                 }
             }
-            colliders.ForEach(collider => collider.CollisionChecked = false);
+            colliders.AsEnumerable().ToList().ForEach(collider => collider.CollisionChecked = false);
 
         }
 
