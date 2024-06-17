@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 
 namespace Bullet_Hell_Game
 {
@@ -12,6 +13,8 @@ namespace Bullet_Hell_Game
         public Vector2 Position { get; set; }
         public Vector2 PreviousPosition { get; private set; } = Vector2.Zero;
         public Vector2 LerpPosition { get; private set; } = Vector2.Zero;
+
+        public event EventHandler? Kill;
 
         public Character(AnimatedSprite sprite) : this(sprite, Vector2.Zero, Vector2.Zero, 1) { }
 
@@ -38,6 +41,11 @@ namespace Bullet_Hell_Game
         {
             LerpPosition = Vector2.Lerp(PreviousPosition, Position, ALPHA);
             sprite.Draw(spriteBatch, LerpPosition, false);
+        }
+
+        public virtual void OnKill(EventArgs e)
+        {
+            Kill?.Invoke(this, e);
         }
     }
 }
