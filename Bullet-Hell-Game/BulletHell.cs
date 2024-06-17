@@ -1,7 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Bullet_Hell_Game
 {
@@ -9,6 +10,10 @@ namespace Bullet_Hell_Game
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+
+        private EntityManager<ILerpMovable> lerpEntityManager;
+        private EntityManager<ILerpMovable> stageElementManager;
+        private EntityManager<ICollidable> collisionEntityManager;
 
         // Fix updates to 30 fps
         private float fixedUpdateDelta = (int)(1000 / (float)30);
@@ -22,11 +27,12 @@ namespace Bullet_Hell_Game
         // next upcoming frame.
         private float ALPHA = 0;
 
+        public ObservableCollection<ILerpMovable> lerpMovables = new ObservableCollection<ILerpMovable>();
+
         private Player player;
 
         private CollisionArea collisionArea;
         private Stage stage;
-        private List<StageElement> stageElements;
 
         public BulletHell()
         {
@@ -54,11 +60,20 @@ namespace Bullet_Hell_Game
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             player = new Player(new AnimatedSprite(Content.Load<Texture2D>("Sprites/Player"), 1, 1, 3), new Vector2(110,110), 13);
-            stageElements = new List<StageElement>() { new(Content.Load<Texture2D>("Sprites/Brass Pipe"), true, new RotatableShape(new Rectangle(605, 200, 80, 40), 0), new Vector2(545, 185), CollisionArea.CollisionType.Obstacle) };
+            ObservableCollection<StageElement> stageElements = new ObservableCollection<StageElement>() { new(Content.Load<Texture2D>("Sprites/Brass Pipe"), true, new RotatableShape(new Rectangle(605, 200, 80, 40), 0), new Vector2(545, 185), CollisionArea.CollisionType.Obstacle) };
             stage = new Stage(stageElements);
 
+            lerpMovables.Add(player);
+            lerpMovables.Add(stage);
+            stageElements.AsEnumerable().ToList().ForEach(x => lerpMovables.Add(x));
+
+            lerpEntityManager = new EntityManager<ILerpMovable>(() => { return lerpMovables; });
+
             collisionArea.colliders.Add(player);
-            collisionArea.colliders.AddRange(stageElements);
+            stageElements.AsEnumerable().ToList().ForEach(x => collisionArea.colliders.Add(x));
+
+            collisionEntityManager = new EntityManager<ICollidable>(() => { return collisionArea.colliders;  });
+
         }
 
         protected override void Update(GameTime gameTime)
@@ -111,8 +126,10 @@ namespace Bullet_Hell_Game
 
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
-            player.LerpDraw(_spriteBatch, ALPHA);
-            stage.LerpDraw(_spriteBatch, ALPHA);
+            foreach (var item in lerpMovables)
+            {
+                item.LerpDraw(_spriteBatch, ALPHA);
+            }
 
             _spriteBatch.End();
 
