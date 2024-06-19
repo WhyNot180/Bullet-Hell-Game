@@ -14,6 +14,8 @@ However, the game is currently W.I.P. and many features may not yet be implement
 
 ## Installation
 
+You can install the game by downloading the [latest release](https://github.com/WhyNot180/Bullet-Hell-Game/releases), extracting it, and then running the file titled "Bullet-Hell"
+
 ## Design
 
 ### Collisions
