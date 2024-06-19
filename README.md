@@ -8,7 +8,7 @@
 
 ## About
 
-This game is a steampunk themed arcade shoot 'em up. The game design document explaining the concept and basic functionality of the game can be found [here](https://docs.google.com/document/d/1aVQhy6VemEaqebC-rwQucTiyn8EiKEAMLSkEYDBvMpk/edit?usp=sharing).
+This game is a steampunk themed arcade shoot 'em up. The game design document explaining the concept and basic functionality of the game can be found [here](https://docs.google.com/document/d/1LKIwgxvbLKc0zvGUu9hkYuEHJI_JojrOwS0_02saqek/edit?usp=sharing).
 Additionally, any information on current goals be found the document.
 However, the game is currently W.I.P. and many features may not yet be implemented.
 
