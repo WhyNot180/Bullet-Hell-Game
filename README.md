@@ -44,4 +44,13 @@ A visualization can be seen below (note: the gif has drastically reduced resolut
 
 ### Managing Entities
 
+A game with many collidable objects must also be careful to manage its resources, lest it overwork the user's machine.
+In order to accomplish this, entity managers had to be created.
+
+An entity manager in this game is merely one that handles the deletion of any resources that can't be collected by the built-in garbage collector.
+This includes anything which is in a list that is periodically processed every update cycle.
+
+Entity managers work by using event handlers attached to each object that must be managed in a list, which is triggered whenever an object must be deleted.
+Once the handler is triggered the entity manager queues it for deletion on the next update cycle.
+
 ### Projectiles
