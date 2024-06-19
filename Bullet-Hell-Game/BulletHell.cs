@@ -24,18 +24,15 @@ namespace Bullet_Hell_Game
         private float timeAccumulator = 0.0f;
         private float maxFrameTime = 250;
         
-        // this value stores how far we are in the current frame. For example, when the 
-        // value of ALPHA is 0.5, it means we are halfway between the last frame and the 
-        // next upcoming frame.
+        /// <summary>
+        /// Stores how far into the frame a lerp movable is (i.e. 0.5 is halfway into the frame)
+        /// </summary>
         private float ALPHA = 0;
 
         public ObservableCollection<ILerpMovable> lerpMovables = new ObservableCollection<ILerpMovable>();
         public ObservableCollection<IFixedUpdatable> fixedUpdateables = new ObservableCollection<IFixedUpdatable>();
 
-        private Player player;
-
         private CollisionArea collisionArea;
-        private Stage stage;
 
         public BulletHell()
         {
@@ -46,14 +43,13 @@ namespace Bullet_Hell_Game
 
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-
+            // Set screen size
             _graphics.IsFullScreen = false;
             _graphics.PreferredBackBufferWidth = 640;
             _graphics.PreferredBackBufferHeight = 780;
             _graphics.ApplyChanges();
 
-            collisionArea = new CollisionArea(new Rectangle(0, 0, 640, 780));
+            collisionArea = new CollisionArea(new Rectangle(0, 0, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight));
 
             base.Initialize();
         }
@@ -62,10 +58,15 @@ namespace Bullet_Hell_Game
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            player = new Player(new AnimatedSprite(Content.Load<Texture2D>("Sprites/Player"), 1, 1, 3), new Vector2(320,700), 13);
+            Player player = new Player(new AnimatedSprite(Content.Load<Texture2D>("Sprites/Player"), 1, 1, 3), new Vector2(320,700), 13);
+            
             ObservableCollection<StageElement> stageElements = new ObservableCollection<StageElement>() { new(Content.Load<Texture2D>("Sprites/Brass Pipe"), true, new RotatableShape(new Rectangle(605, 200, 80, 40), 0), new Vector2(545, 185), CollisionArea.CollisionType.Obstacle) };
-            stage = new Stage(stageElements);
+
+            Stage stage = new Stage(stageElements);
+            
             List<Projectile> projectiles = new List<Projectile>();
+            
+            // Movement pattern for each projectile
             for (int j = 0; j < 4; j++)
             {
                 projectiles.Add(new Projectile(new RotatableShape(320 - j*70, 200, 20), new Vector2(300 - j*70, 180), new AnimatedSprite(Content.Load<Texture2D>("Sprites/Gear Projectile"), 1, 2, 2.5f), CollisionArea.CollisionType.EnemyProjectile,
@@ -80,6 +81,7 @@ namespace Bullet_Hell_Game
                     new Iterator(0, 0.1f)));
             }
 
+            // Add each relevant object to entity managers
             lerpMovables.Add(player);
             lerpMovables.Add(stage);
             projectiles.ForEach(x => lerpMovables.Add(x));
@@ -148,6 +150,8 @@ namespace Bullet_Hell_Game
             {
                 item.FixedUpdate();
             }
+
+            // Kill any object that goes off screen
             foreach (var item in lerpMovables)
             {
                 if (item.Position.X < -50 || item.Position.X > 640 || item.Position.Y < -50 || item.Position.Y > 780)

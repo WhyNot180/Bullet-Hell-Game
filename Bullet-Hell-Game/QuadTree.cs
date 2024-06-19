@@ -1,9 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Bullet_Hell_Game
 {
+    /// <summary>
+    /// Tree with 4 children per node
+    /// </summary>
     public class QuadTree
     {
         private const int MaxObjects = 10;
@@ -14,6 +16,11 @@ namespace Bullet_Hell_Game
         private Rectangle bounds;
         private QuadTree[] nodes;
 
+        /// <summary>
+        /// Initializes a QuadTree node with current level and bounds
+        /// </summary>
+        /// <param name="level">Amount of times a split occured</param>
+        /// <param name="bounds"></param>
         public QuadTree(int level, Rectangle bounds)
         {
             this.level = level;
@@ -22,6 +29,9 @@ namespace Bullet_Hell_Game
             nodes = new QuadTree[4];
         }
 
+        /// <summary>
+        /// Recursively clears all children of a node
+        /// </summary>
         public void Clear()
         {
             objects.Clear();
@@ -35,6 +45,9 @@ namespace Bullet_Hell_Game
             }
         }
 
+        /// <summary>
+        /// Initializes the children of a node
+        /// </summary>
         private void Split()
         {
             int subWidth = bounds.Width / 2;
@@ -42,12 +55,18 @@ namespace Bullet_Hell_Game
             int x = bounds.X;
             int y = bounds.Y;
 
+            // Set node for each quadrant
             nodes[0] = new QuadTree(level + 1, new Rectangle(x + subWidth, y, subWidth, subHeight));
             nodes[1] = new QuadTree(level + 1, new Rectangle(x, y, subWidth, subHeight));
             nodes[2] = new QuadTree(level + 1, new Rectangle(x, y + subHeight, subWidth, subHeight));
             nodes[3] = new QuadTree(level + 1, new Rectangle(x + subWidth, y + subHeight, subWidth, subHeight));
         }
 
+        /// <summary>
+        /// Returns the numbered quadrant of a object based on a counter-clockwise direction starting at the top-right quadrant
+        /// </summary>
+        /// <param name="rect"></param>
+        /// <returns></returns>
         private int GetQuadrant(RotatableShape rect)
         {
             int quadrant = -1;
@@ -82,14 +101,20 @@ namespace Bullet_Hell_Game
             return quadrant;
         }
 
+        /// <summary>
+        /// Inserts a collider to the tree
+        /// </summary>
+        /// <param name="collider"></param>
         public void Insert(ICollidable collider)
         {
             if (nodes[0] != null)
             {
+                // Check to make sure collider is not outside of bounds
                 int index = GetQuadrant(collider.BoundingBox);
 
                 if (index != -1)
                 {
+                    // Place collider in sub-quadrant
                     nodes[index].Insert(collider);
 
                     return;
@@ -121,6 +146,12 @@ namespace Bullet_Hell_Game
             }
         }
 
+        /// <summary>
+        /// Get objects in same quadrant as input
+        /// </summary>
+        /// <param name="returnObjects"></param>
+        /// <param name="rect"></param>
+        /// <returns></returns>
         public List<ICollidable> Retrieve(List<ICollidable> returnObjects, RotatableShape rect)
         {
             int index = GetQuadrant(rect);

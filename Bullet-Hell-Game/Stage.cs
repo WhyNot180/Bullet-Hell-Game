@@ -7,6 +7,9 @@ using System.Linq;
 
 namespace Bullet_Hell_Game
 {
+    /// <summary>
+    /// A scrolling set of StageElements
+    /// </summary>
     public class Stage : ILerpMovable, IFixedUpdatable
     {
         public Vector2 Position {  get; set; }
@@ -19,6 +22,10 @@ namespace Bullet_Hell_Game
 
         public ObservableCollection<StageElement> elements;
 
+        /// <summary>
+        /// Initializes a Stage with a set of StageElements
+        /// </summary>
+        /// <param name="elements"></param>
         public Stage(ObservableCollection<StageElement> elements)
         {
             this.elements = elements;

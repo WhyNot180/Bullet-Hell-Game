@@ -3,6 +3,9 @@ using System.Diagnostics;
 
 namespace Bullet_Hell_Game
 {
+    /// <summary>
+    /// Iterates a float to provide a timestep for objects which may not have direct access to game time
+    /// </summary>
     public class Iterator
     {
         private float Iteration;
