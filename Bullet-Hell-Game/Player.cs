@@ -5,6 +5,9 @@ using System.Diagnostics;
 
 namespace Bullet_Hell_Game
 {
+    /// <summary>
+    /// Player controllable character
+    /// </summary>
     public class Player : Character, ICollidable
     {
         private int lives = 3;
@@ -15,6 +18,12 @@ namespace Bullet_Hell_Game
         public bool IsCollidable { get; set; } = true;
         public bool CollisionChecked { get; set; } = false;
 
+        /// <summary>
+        /// Initializes a player at a position with a default movement speed
+        /// </summary>
+        /// <param name="sprite"></param>
+        /// <param name="position"></param>
+        /// <param name="speed"></param>
         public Player(AnimatedSprite sprite, Vector2 position, float speed) : base(sprite, position, Vector2.Zero, speed) 
         {
             float width = sprite.Texture.Width * sprite.Scale;
@@ -24,7 +33,7 @@ namespace Bullet_Hell_Game
 
         public override void FixedUpdate()
         {
-
+            // Determine move direction from pressed arrow keys
             if (Keyboard.GetState().IsKeyDown(Keys.Up))
             {
                 MoveDirection = new Vector2(MoveDirection.X, -1);
@@ -51,10 +60,12 @@ namespace Bullet_Hell_Game
                 MoveDirection = new Vector2(0, MoveDirection.Y);
             }
 
+            // Normalize move direction (can't normalize a zero vector)
             if (!MoveDirection.Equals(Vector2.Zero))
             {
                 MoveDirection = Vector2.Normalize(MoveDirection);
             }
+
             base.FixedUpdate();
             BoundingBox.Move(new Vector2(BoundingBox.X, BoundingBox.Y) + MoveDirection*Speed);
         }
@@ -65,6 +76,7 @@ namespace Bullet_Hell_Game
             {
                 case CollisionArea.CollisionType.Obstacle:
                     {
+                        // Be moved away from obstacle if colliding
                         Position = Vector2.Add(Position, minimumTranslationVector/2);
                         BoundingBox.Move(new Vector2(BoundingBox.X, BoundingBox.Y) + minimumTranslationVector / 2);
                         MoveDirection = Vector2.Zero;
@@ -72,6 +84,7 @@ namespace Bullet_Hell_Game
                     }
                 case CollisionArea.CollisionType.EnemyProjectile:
                     {
+                        // Die on projectile collision
                         OnKill(EventArgs.Empty);
                         break;
                     }
