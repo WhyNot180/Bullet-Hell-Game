@@ -14,17 +14,18 @@ namespace Bullet_Hell_Game
         public Vector2 MoveDirection { get; private set; }
         public float Speed { get; set; }
 
-        private Func<Vector2> DirectionPattern;
-        private Func<float> SpeedPattern;
+        private Func<float, Vector2> DirectionPattern;
+        private Func<float, float> SpeedPattern;
+        private Iterator Iterator;
 
         int milli = 0;
-        public bool IsCollidable {  get; set; }
+        public bool IsCollidable { get; set; } = true;
         public CollisionArea.CollisionType CollisionType { get; private set; }
         public RotatableShape BoundingBox { get; private set; }
         public bool CollisionChecked { get; set; } = false;
         public event EventHandler? Kill;
 
-        public Projectile(RotatableShape boundingBox, Vector2 position, AnimatedSprite sprite, CollisionArea.CollisionType collisionType, Func<Vector2> directionPattern, Func<float> speedPattern)
+        public Projectile(RotatableShape boundingBox, Vector2 position, AnimatedSprite sprite, CollisionArea.CollisionType collisionType, Func<float, Vector2> directionPattern, Func<float, float> speedPattern, Iterator iterator)
         {
             BoundingBox = boundingBox;
             Position = position;
@@ -32,18 +33,19 @@ namespace Bullet_Hell_Game
             CollisionType = collisionType;
             DirectionPattern = directionPattern;
             SpeedPattern = speedPattern;
+            Iterator = iterator;
         }
 
         public void FixedUpdate()
         {
+            float iteration = Iterator.Iterate();
             sprite.Update(milli, 10);
-            milli += 33;
+            milli += 20;
             PreviousPosition = Position;
-            MoveDirection = Vector2.Normalize(DirectionPattern());
-            Speed = SpeedPattern();
+            MoveDirection = Vector2.Normalize(DirectionPattern(iteration));
+            Speed = SpeedPattern(iteration);
             Position += MoveDirection * Speed;
             BoundingBox.Move(new Vector2(BoundingBox.X, BoundingBox.Y) + MoveDirection * Speed);
-
         }
 
         public void LerpDraw(SpriteBatch spriteBatch, float ALPHA)
