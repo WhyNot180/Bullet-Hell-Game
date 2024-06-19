@@ -54,3 +54,10 @@ Entity managers work by using event handlers attached to each object that must b
 Once the handler is triggered the entity manager queues it for deletion on the next update cycle.
 
 ### Projectiles
+
+Functioning projectiles are next most important thing after the former 2 mentioned aspects of a shoot 'em up. 
+They utilize the functions of both entity managers and collision detection, but they add one more bit to the equation: *movement patterns*
+
+A projectile must move a certain direction and speed, but we want that to change. Thus, I present movement patterns, math equations passed as functions to each projectile, allowing for dynamic customization of movement.
+This then presents an opportunity to challenge a player with unique and beautiful patterns such as this:
+![](https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn.akamai.steamstatic.com%2Fsteam%2Fapps%2F1269770%2Fextras%2Fcircular_6.gif%3Ft%3D1594614870&f=1&nofb=1&ipt=e5bd0df18934032099955601ee470c92434c723c122cd9468b15907b2cddec44&ipo=images)
