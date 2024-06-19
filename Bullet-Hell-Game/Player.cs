@@ -1,12 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Bullet_Hell_Game
 {
@@ -24,7 +19,7 @@ namespace Bullet_Hell_Game
         {
             float width = sprite.Texture.Width * sprite.Scale;
             float height = sprite.Texture.Height * sprite.Scale;
-            BoundingBox = new RotatableShape(position.X + (width/2), position.Y + (height/2), width/2);
+            BoundingBox = new RotatableShape(position.X + (width/2), position.Y + (height/2), width/2/3);
         }
 
         public override void FixedUpdate()
@@ -66,9 +61,26 @@ namespace Bullet_Hell_Game
 
         public void OnCollision(CollisionArea.CollisionType collisionType, Vector2 minimumTranslationVector)
         {
-            Position = Vector2.Add(Position, minimumTranslationVector/2);
-            BoundingBox.Move(new Vector2(BoundingBox.X, BoundingBox.Y) + minimumTranslationVector / 2);
-            MoveDirection = Vector2.Zero;
+            switch(collisionType)
+            {
+                case CollisionArea.CollisionType.Obstacle:
+                    {
+                        Position = Vector2.Add(Position, minimumTranslationVector/2);
+                        BoundingBox.Move(new Vector2(BoundingBox.X, BoundingBox.Y) + minimumTranslationVector / 2);
+                        MoveDirection = Vector2.Zero;
+                        break;
+                    }
+                case CollisionArea.CollisionType.EnemyProjectile:
+                    {
+                        OnKill(EventArgs.Empty);
+                        break;
+                    }
+                default:
+                    {
+                        break;
+                    }
+            }
+            
         }
 
     }
