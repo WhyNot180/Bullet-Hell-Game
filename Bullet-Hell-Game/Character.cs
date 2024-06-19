@@ -4,6 +4,9 @@ using System;
 
 namespace Bullet_Hell_Game
 {
+    /// <summary>
+    /// Simple base for character entities
+    /// </summary>
     public class Character : ILerpMovable, IFixedUpdatable
     {
         private AnimatedSprite sprite;
@@ -16,11 +19,22 @@ namespace Bullet_Hell_Game
 
         public event EventHandler? Kill;
 
+        /// <summary>
+        /// Initializes a character at position (0,0) with zero velocity
+        /// </summary>
+        /// <param name="sprite"></param>
         public Character(AnimatedSprite sprite) : this(sprite, Vector2.Zero, Vector2.Zero, 1) { }
 
-        public Character(AnimatedSprite sprite, Vector2 position, Vector2 velocity, float speed)
+        /// <summary>
+        /// Initializes a character with a specific position and velocity
+        /// </summary>
+        /// <param name="sprite"></param>
+        /// <param name="position"></param>
+        /// <param name="moveDirection"></param>
+        /// <param name="speed"></param>
+        public Character(AnimatedSprite sprite, Vector2 position, Vector2 moveDirection, float speed)
         {
-            MoveDirection = velocity;
+            MoveDirection = moveDirection;
             Speed = speed;
             Position = position;
             this.sprite = sprite;
