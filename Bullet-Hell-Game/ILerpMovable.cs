@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace Bullet_Hell_Game
 {
+    /// <summary>
+    /// Used for any object that does not guarantee smooth movement (i.e. movement on a fixed framerate)
+    /// </summary>
     public interface ILerpMovable : IKillable
     {
         Vector2 Position { get; }
