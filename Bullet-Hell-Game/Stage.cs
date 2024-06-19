@@ -1,37 +1,47 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Bullet_Hell_Game
 {
-    public class Stage : ILerpMovable
+    public class Stage : ILerpMovable, IFixedUpdatable
     {
         public Vector2 Position {  get; set; }
         public Vector2 PreviousPosition { get; private set; } = Vector2.Zero;
         public Vector2 LerpPosition { get; private set; } = Vector2.Zero;
-        public Vector2 MoveVelocity { get; set; } = Vector2.Zero;
+        public Vector2 MoveDirection { get; set; } = Vector2.Zero;
         public float Speed { get; set; }
 
-        private List<StageElement> elements;
+        public event EventHandler? Kill;
 
-        public Stage(List<StageElement> elements)
+        public ObservableCollection<StageElement> elements;
+
+        public Stage(ObservableCollection<StageElement> elements)
         {
             this.elements = elements;
         }
 
-        public void Move(float deltaSeconds)
+        public void Move()
         {
-            Position = Vector2.Add(Position, Vector2.Multiply(MoveVelocity, deltaSeconds * Speed));
+            Position = Vector2.Add(Position, Vector2.Multiply(MoveDirection, Speed));
         }
 
-        public void Update(float deltaTime)
+        public void FixedUpdate()
         {
-            elements.ForEach(element => element.Move(MoveVelocity*Speed));
+            elements.AsEnumerable().ToList().ForEach(element => element.MoveVelocity = MoveDirection * Speed);
         }
 
         public void LerpDraw(SpriteBatch spriteBatch, float ALPHA)
         {
-            elements.ForEach(element => element.LerpDraw(spriteBatch, ALPHA));
+            return;
+        }
+        
+        public void OnKill(EventArgs e)
+        {
+            Kill?.Invoke(this, e);
         }
 
     }

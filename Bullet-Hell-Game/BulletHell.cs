@@ -1,7 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Bullet_Hell_Game
 {
@@ -9,6 +12,10 @@ namespace Bullet_Hell_Game
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+
+        private EntityManager<ILerpMovable> lerpEntityManager;
+        private EntityManager<ICollidable> collisionEntityManager;
+        private EntityManager<IFixedUpdatable> fixedUpdateablesManager;
 
         // Fix updates to 30 fps
         private float fixedUpdateDelta = (int)(1000 / (float)30);
@@ -22,11 +29,13 @@ namespace Bullet_Hell_Game
         // next upcoming frame.
         private float ALPHA = 0;
 
+        public ObservableCollection<ILerpMovable> lerpMovables = new ObservableCollection<ILerpMovable>();
+        public ObservableCollection<IFixedUpdatable> fixedUpdateables = new ObservableCollection<IFixedUpdatable>();
+
         private Player player;
 
         private CollisionArea collisionArea;
         private Stage stage;
-        private List<StageElement> stageElements;
 
         public BulletHell()
         {
@@ -53,12 +62,44 @@ namespace Bullet_Hell_Game
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            player = new Player(new AnimatedSprite(Content.Load<Texture2D>("Sprites/Player"), 1, 1, 3), new Vector2(110,110), 13);
-            stageElements = new List<StageElement>() { new(Content.Load<Texture2D>("Sprites/Brass Pipe"), true, new RotatableShape(new Rectangle(605, 200, 80, 40), 0), new Vector2(545, 185), CollisionArea.CollisionType.Obstacle) };
+            player = new Player(new AnimatedSprite(Content.Load<Texture2D>("Sprites/Player"), 1, 1, 3), new Vector2(320,700), 13);
+            ObservableCollection<StageElement> stageElements = new ObservableCollection<StageElement>() { new(Content.Load<Texture2D>("Sprites/Brass Pipe"), true, new RotatableShape(new Rectangle(605, 200, 80, 40), 0), new Vector2(545, 185), CollisionArea.CollisionType.Obstacle) };
             stage = new Stage(stageElements);
+            List<Projectile> projectiles = new List<Projectile>();
+            for (int j = 0; j < 4; j++)
+            {
+                projectiles.Add(new Projectile(new RotatableShape(320 - j*70, 200, 20), new Vector2(300 - j*70, 180), new AnimatedSprite(Content.Load<Texture2D>("Sprites/Gear Projectile"), 1, 2, 2.5f), CollisionArea.CollisionType.EnemyProjectile,
+                    i =>
+                    {
+                        return new Vector2(MathF.Sin(i), -MathF.Cos(i)+1);
+                    },
+                    i =>
+                    {
+                        return 5;
+                    },
+                    new Iterator(0, 0.1f)));
+            }
+
+            lerpMovables.Add(player);
+            lerpMovables.Add(stage);
+            projectiles.ForEach(x => lerpMovables.Add(x));
+            stageElements.AsEnumerable().ToList().ForEach(x => lerpMovables.Add(x));
+
+            lerpEntityManager = new EntityManager<ILerpMovable>(() => { return lerpMovables; });
 
             collisionArea.colliders.Add(player);
-            collisionArea.colliders.AddRange(stageElements);
+            projectiles.ForEach(x => collisionArea.colliders.Add(x));
+            stageElements.AsEnumerable().ToList().ForEach(x => collisionArea.colliders.Add(x));
+
+            collisionEntityManager = new EntityManager<ICollidable>(() => { return collisionArea.colliders;  });
+
+            fixedUpdateables.Add(player);
+            fixedUpdateables.Add(stage);
+            projectiles.ForEach(x => fixedUpdateables.Add(x));
+            stageElements.AsEnumerable().ToList().ForEach(x => fixedUpdateables.Add(x));
+            fixedUpdateables.Add(collisionArea);
+
+            fixedUpdateablesManager = new EntityManager<IFixedUpdatable>(() => { return fixedUpdateables; });
         }
 
         protected override void Update(GameTime gameTime)
@@ -94,15 +135,26 @@ namespace Bullet_Hell_Game
             ALPHA = (timeAccumulator / fixedUpdateDelta);
 
             // Put updates that don't depend on a fixed framerate below
+            collisionEntityManager.KillFlaggedObjects();
+            fixedUpdateablesManager.KillFlaggedObjects();
+            lerpEntityManager.KillFlaggedObjects();
 
             base.Update(gameTime);
         }
 
         private void FixedUpdate()
         {
-            player.Update(1);
-            stage.Update(1);
-            collisionArea.Update();
+            foreach (var item in fixedUpdateables)
+            {
+                item.FixedUpdate();
+            }
+            foreach (var item in lerpMovables)
+            {
+                if (item.Position.X < -50 || item.Position.X > 640 || item.Position.Y < -50 || item.Position.Y > 780)
+                {
+                    item.OnKill(EventArgs.Empty);
+                }
+            }
         }
 
         protected override void Draw(GameTime gameTime)
@@ -111,8 +163,10 @@ namespace Bullet_Hell_Game
 
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
-            player.LerpDraw(_spriteBatch, ALPHA);
-            stage.LerpDraw(_spriteBatch, ALPHA);
+            foreach (var item in lerpMovables)
+            {
+                item.LerpDraw(_spriteBatch, ALPHA);
+            }
 
             _spriteBatch.End();
 

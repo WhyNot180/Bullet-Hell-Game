@@ -1,12 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Bullet_Hell_Game
 {
@@ -24,58 +19,68 @@ namespace Bullet_Hell_Game
         {
             float width = sprite.Texture.Width * sprite.Scale;
             float height = sprite.Texture.Height * sprite.Scale;
-            BoundingBox = new RotatableShape(position.X + (width/2), position.Y + (height/2), width, height, 0, new List<Vector2>
-            {
-                new(-width / 2, height / 2),
-                new(width / 2, height / 2),
-                new(width / 2, -height / 2),
-                new(-width / 2, -height / 2)
-            });
+            BoundingBox = new RotatableShape(position.X + (width/2), position.Y + (height/2), width/2/3);
         }
 
-        public override void Update(float deltaSeconds)
+        public override void FixedUpdate()
         {
 
             if (Keyboard.GetState().IsKeyDown(Keys.Up))
             {
-                MoveVelocity = new Vector2(MoveVelocity.X, -1);
+                MoveDirection = new Vector2(MoveDirection.X, -1);
             }
             else if (Keyboard.GetState().IsKeyDown(Keys.Down))
             {
-                MoveVelocity = new Vector2(MoveVelocity.X, 1);
+                MoveDirection = new Vector2(MoveDirection.X, 1);
             }
             else
             {
-                MoveVelocity = new Vector2(MoveVelocity.X, 0);
+                MoveDirection = new Vector2(MoveDirection.X, 0);
             }
 
             if (Keyboard.GetState().IsKeyDown(Keys.Right))
             {
-                MoveVelocity = new Vector2(1, MoveVelocity.Y);
+                MoveDirection = new Vector2(1, MoveDirection.Y);
             }
             else if (Keyboard.GetState().IsKeyDown(Keys.Left))
             {
-                MoveVelocity = new Vector2(-1, MoveVelocity.Y);
+                MoveDirection = new Vector2(-1, MoveDirection.Y);
             }
             else
             {
-                MoveVelocity = new Vector2(0, MoveVelocity.Y);
+                MoveDirection = new Vector2(0, MoveDirection.Y);
             }
 
-            if (!MoveVelocity.Equals(Vector2.Zero))
+            if (!MoveDirection.Equals(Vector2.Zero))
             {
-                MoveVelocity = Vector2.Normalize(MoveVelocity);
+                MoveDirection = Vector2.Normalize(MoveDirection);
             }
-            base.Update(deltaSeconds);
-            BoundingBox.Move(new Vector2(BoundingBox.X, BoundingBox.Y) + MoveVelocity*Speed);
-
+            base.FixedUpdate();
+            BoundingBox.Move(new Vector2(BoundingBox.X, BoundingBox.Y) + MoveDirection*Speed);
         }
 
         public void OnCollision(CollisionArea.CollisionType collisionType, Vector2 minimumTranslationVector)
         {
-            Position = Vector2.Add(Position, minimumTranslationVector/2);
-            BoundingBox.Move(new Vector2(BoundingBox.X, BoundingBox.Y) + minimumTranslationVector / 2);
-            MoveVelocity = Vector2.Zero;
+            switch(collisionType)
+            {
+                case CollisionArea.CollisionType.Obstacle:
+                    {
+                        Position = Vector2.Add(Position, minimumTranslationVector/2);
+                        BoundingBox.Move(new Vector2(BoundingBox.X, BoundingBox.Y) + minimumTranslationVector / 2);
+                        MoveDirection = Vector2.Zero;
+                        break;
+                    }
+                case CollisionArea.CollisionType.EnemyProjectile:
+                    {
+                        OnKill(EventArgs.Empty);
+                        break;
+                    }
+                default:
+                    {
+                        break;
+                    }
+            }
+            
         }
 
     }

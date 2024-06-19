@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Bullet_Hell_Game
 {
-    public interface ICollidable
+    public interface ICollidable : IKillable
     {
         bool IsCollidable { get; }
         CollisionArea.CollisionType CollisionType { get; }

@@ -25,6 +25,18 @@
 /processorParam:TextureFormat=Color
 /build:Sprites/Brass Pipe.png
 
+#begin Sprites/Gear Projectile.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Sprites/Gear Projectile.png
+
 #begin Sprites/Player.png
 /importer:TextureImporter
 /processor:TextureProcessor
