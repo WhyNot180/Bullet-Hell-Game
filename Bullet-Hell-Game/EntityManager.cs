@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
 
@@ -17,25 +18,18 @@ namespace Bullet_Hell_Game
         /// <summary>
         /// Reference to original observable collection, as removing from a copy would be useless
         /// </summary>
-        readonly Func<ObservableCollection<T>> entityListGetter;
 
-        private ObservableCollection<T> EntityList
-        {
-            get
-            {
-                return entityListGetter();
-            }
-        }
+        private ObservableCollection<T> entityList;
 
         /// <summary>
         /// Initializes an EntityManager with the observable collection containing managed entities
         /// </summary>
         /// <param name="getter">Reference to observable collection through function (i.e. returns ObservableCollection)</param>
-        public EntityManager(Func<ObservableCollection<T>> getter)
+        public EntityManager(ObservableCollection<T> entityList)
         {
-            entityListGetter = getter;
-            EntityList.AsEnumerable().ToList().ForEach(x => x.Kill += Kill);
-            EntityList.CollectionChanged += AddKillableHandler;
+            this.entityList = entityList;
+            this.entityList.AsEnumerable().ToList().ForEach(x => x.Kill += Kill);
+            this.entityList.CollectionChanged += AddKillableHandler;
         }
 
         /// <summary>
@@ -43,9 +37,11 @@ namespace Bullet_Hell_Game
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void AddKillableHandler(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void AddKillableHandler(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (!e.Action.HasFlag(System.Collections.Specialized.NotifyCollectionChangedAction.Remove) && (e.Action.HasFlag(System.Collections.Specialized.NotifyCollectionChangedAction.Add) || e.Action.HasFlag(System.Collections.Specialized.NotifyCollectionChangedAction.Replace)))
+            if (!e.Action.HasFlag(NotifyCollectionChangedAction.Remove) && 
+                (e.Action.HasFlag(NotifyCollectionChangedAction.Add) || 
+                e.Action.HasFlag(NotifyCollectionChangedAction.Replace)))
             {
                 List<T> newItems = e.NewItems as List<T>;
                 List<T> addedItems = newItems.Where(x => !e.OldItems.Contains(x)).ToList();
@@ -68,7 +64,7 @@ namespace Bullet_Hell_Game
         /// </summary>
         public void KillFlaggedObjects()
         {
-            killList.ForEach(x => EntityList.Remove(x));
+            killList.ForEach(x => entityList.Remove(x));
             killList.Clear();
         }
     }
