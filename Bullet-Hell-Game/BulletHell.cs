@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Bullet_Hell_Game
@@ -87,13 +88,13 @@ namespace Bullet_Hell_Game
             projectiles.ForEach(x => lerpMovables.Add(x));
             stageElements.AsEnumerable().ToList().ForEach(x => lerpMovables.Add(x));
 
-            lerpEntityManager = new EntityManager<ILerpMovable>(() => { return lerpMovables; });
+            lerpEntityManager = new EntityManager<ILerpMovable>(lerpMovables);
 
             collisionArea.colliders.Add(player);
             projectiles.ForEach(x => collisionArea.colliders.Add(x));
             stageElements.AsEnumerable().ToList().ForEach(x => collisionArea.colliders.Add(x));
 
-            collisionEntityManager = new EntityManager<ICollidable>(() => { return collisionArea.colliders;  });
+            collisionEntityManager = new EntityManager<ICollidable>(collisionArea.colliders);
 
             fixedUpdateables.Add(player);
             fixedUpdateables.Add(stage);
@@ -101,7 +102,7 @@ namespace Bullet_Hell_Game
             stageElements.AsEnumerable().ToList().ForEach(x => fixedUpdateables.Add(x));
             fixedUpdateables.Add(collisionArea);
 
-            fixedUpdateablesManager = new EntityManager<IFixedUpdatable>(() => { return fixedUpdateables; });
+            fixedUpdateablesManager = new EntityManager<IFixedUpdatable>(fixedUpdateables);
         }
 
         protected override void Update(GameTime gameTime)
